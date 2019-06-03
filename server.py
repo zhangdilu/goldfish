@@ -1,9 +1,13 @@
 #!/usr/bin/env python
-# coding=utf-8
+# -*- coding: UTF-8 -*-
 
 import os
-
-from flask import Flask, request, Response, render_template as rt
+from flask import Flask, request, Response,send_file, render_template as rt
+import pymongo
+from pymongo import MongoClient # Database connector
+from bson.objectid import ObjectId # For ObjectId to work
+from bson.errors import InvalidId # For catching InvalidId exception for ObjectId
+from bson.json_util import dumps
 
 app = Flask(__name__)
 
@@ -36,7 +40,7 @@ def upload_success():  # 按序读出分片内容，并写入新文件
                 source_file = open(filename, 'rb')  # 按序打开每个分片
                 target_file.write(source_file.read())  # 读取分片内容写入新文件
                 source_file.close()
-            except IOError, msg:
+            except (IOError, msg):
                 break
 
             chunk += 1
@@ -48,7 +52,7 @@ def upload_success():  # 按序读出分片内容，并写入新文件
 @app.route('/file/list', methods=['GET'])
 def file_list():
     files = os.listdir('./upload/')  # 获取文件目录
-    files = map(lambda x: x if isinstance(x, unicode) else x.decode('utf-8'), files)  # 注意编码
+    files = map(lambda x: x if isinstance(x, str) else x.decode('utf-8'), files)  # 注意编码
     return rt('./list.html', files=files)
 
 
@@ -65,6 +69,37 @@ def file_download(filename):
 
     return Response(send_chunk(), content_type='application/octet-stream')
 
+@app.route('/#one',methods=['GET'])
+def return_video():
+	# TODO:前端渲染index.html中的#one
+	# TODO:不应该读取最新的
+	dir = './analysis'
+	videos = os.listdir(dir)
+	videos.sort(key=lambda fn: os.path.getmtime(dir + "/" + fn)
+                    if not os.path.isdir(dir + "/" + fn) else 0)
+	print('newest: ' + videos[-1])
+	file = os.path.join(dir, videos[-1])
+	print('fullpath', file)
+	return send_file(file,mimetype='video/mp4')
+	#return rt('./data.html',files=file)
+
+#@app.route('/data',methods=['GET'])
+@app.route('/result/<p_id>',methods=['GET'])
+def show_result(p_id):
+	# 返回pid对应的分析结果
+	# TODO:渲染index.html中的#two
+	return dumps(collection.find_one({'p_id':p_id}))
+	#return rt('./index.html')
+
+@app.route('/result',methods=['GET'])
+def show_results():
+	# 返回所有分析结果
+	# TODO:渲染index.html中的#two
+	return dumps(collection.find())
+	#return rt('./index.html')
 
 if __name__ == '__main__':
-    app.run(debug=False, threaded=True,host='0.0.0.0')
+	connection=pymongo.MongoClient("localhost",27017)
+	db = connection.goldfish
+	collection = db.goldfish
+	app.run(debug=True, threaded=True,host='0.0.0.0')
