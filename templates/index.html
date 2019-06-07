@@ -14,6 +14,9 @@
 		<script src="static/js/px-video.js"></script>
 		<script src="static/js/webuploader.min.js"></script>
 		<script src="static/js/jquery-1.11.1.min.js"></script>
+		<script src="static/js/gg_bd_ad_720x90.js" type="text/javascript"></script>
+		<script src="static/js/follow.js" type="text/javascript"></script>
+		<script src="static/js/apexcharts.js"></script>	
 		<link rel="stylesheet" href="./static/css/skel-noscript.css" />
 		<link rel="stylesheet" href="./static/bootstrap/css/bootstrap.min.css" />
 		<link rel="stylesheet" href="./static/css/style.css" />
@@ -28,6 +31,21 @@
 		</noscript>-->
 		<!--[if lte IE 8]><link rel="stylesheet" href="css/ie/v8.css" /><![endif]-->
 	</head>
+		<style>
+		#wrapper {
+		  padding-top: 20px;
+		  background: #000524;
+		  border: 1px solid #000;
+		  box-shadow: 0 22px 35px -16px rgba(0, 0, 0, 0.71);
+		  max-width: 650px;
+		  margin: 35px auto;
+		}
+
+		#chart-bar {
+		  position: relative;
+		  margin-top: -38px;
+		}
+		</style>
 	<body>
 
 		<!-- Header -->
@@ -42,6 +60,7 @@
 							<li><a href="#intro">Upload</a></li>
 							<li><a href="#one">Video</a></li>
 							<li><a href="#two">Data</a></li>
+							<li><a href="#three">Chart</a></li>
 						</ul>
 					</nav>
 
@@ -133,6 +152,25 @@
 						<th>23</th>
 					</tr>
 				</table>
+				<a href="#three" class="button style2 down1 anchored">Next</a>
+			</section>
+              <!-- Three -->
+			<section id="three" class="main style2 left  fullscreen">
+				<html lang="en">
+
+				<div id="cavscontainer">
+	    			<canvas id="cavsElem" style="margin-left:30%">
+					您的浏览器不支持canvas，请升级浏览器
+	   			 </canvas>
+				</div>
+				<div id="wrapper">
+				  <div id="chart-area">
+
+				  </div>
+				  <div id="chart-bar">
+
+				  </div>
+				</div>
 			</section>
 
 
@@ -178,8 +216,177 @@
 		            $.get('{{ url_for("upload_success") }}', data,function(data,status){
 					$('video').attr({src:name,type:"video/mp4"});
 					alert("检测完成");
-					str = "<tr><th>00:03</th><th>sanny</th><th>02</th><th>Female</th><th>170.5</th><th>23</th></tr>"
+					//alert(data);
+					str = "<tr><th>00:03</th><th>sanny</th><th>02</th><th>Female</th><th>170.5</th><th>23</th></tr>";
 					$('#tab').append(str);
+					var obj = $.parseJSON(data);
+					alert(obj);
+                                        //
+					var canvas = document.getElementById('cavsElem');
+					var ctx = canvas.getContext('2d');
+					canvas.width = 600;
+					canvas.height = 600;
+				 
+				
+					//定义起始角度
+					var tempAngle=-90;
+					//定圆心位置
+					var x0=300,y0=300;
+					//定半径长度
+					var radius=200;
+					//从-90度开始绘制
+					for(var i=0; i<obj.length; i++){
+					    ctx.beginPath();
+					    ctx.moveTo(x0,y0);
+					    //当前扇形角度
+					    var angle = obj[i].value*360;
+					    //当前扇形起始绘制弧度
+					    var startAngle = tempAngle*Math.PI/180;
+					    //当前扇形借结束绘制弧度
+					    var endAngle = (tempAngle + angle)*Math.PI/180;
+					    //绘制扇形
+					    ctx.arc(x0,y0,radius,startAngle,endAngle);
+					    ctx.stroke();
+					    //填充扇形
+					    ctx.fillStyle = obj[i].color;
+					    ctx.fill();
+				 
+					    //绘制文字
+					    //提取要绘制的文字内容
+					    //var txt = data[i].value*100+'%';
+					    var txt = obj[i].title;
+					    //计算文字要放的角度
+					    var txtAngle = tempAngle + 1/2*angle;
+					    //计算文字要放的坐标位置
+					    var x,y;
+					    x=x0+Math.cos(txtAngle*Math.PI/180)*(radius+20);
+					    y=y0+Math.sin(txtAngle*Math.PI/180)*(radius+20);
+					    //如果文字在圆形的左侧，那么让文字 对齐方式为 文字结尾对齐当前坐标。
+					    if(txtAngle>90 && txtAngle<270){
+						ctx.textAlign = 'end';
+					    }
+					    //文字绘制到扇形旁边
+					    ctx.font="40px Georgia";
+					    //ctx.fillstyle="#FFF"
+					    ctx.fillText(txt,x,y);
+				 
+					    //当前扇形结束绘制角度，
+					    tempAngle += angle;
+					}
+
+					//bing
+					var data1 = [[1,10],[2,8],[3,7],[4,6],[5,2],[6,7],[7,15],[8,16]];
+					var options1 = {
+					  chart: {
+					    id: "chart2",
+					    type: "area",
+					    height: 230,
+					    foreColor: "#ccc",
+					    toolbar: {
+					      autoSelected: "pan",
+					      show: false
+					    }
+					  },
+					  colors: ["#00BAEC"],
+					  stroke: {
+					    width: 3
+					  },
+					  grid: {
+					    borderColor: "#555",
+					    yaxis: {
+					      lines: {
+						show: false
+					      }
+					    }
+					  },
+					  dataLabels: {
+					    enabled: false
+					  },
+					  fill: {
+					    gradient: {
+					      enabled: true,
+					      opacityFrom: 0.55,
+					      opacityTo: 0
+					    }
+					  },
+					  markers: {
+					    size: 5,
+					    colors: ["#000524"],
+					    strokeColor: "#00BAEC",
+					    strokeWidth: 3
+					  },
+					  series: [
+					    {
+					      data: data1
+					    }
+					  ],
+					  tooltip: {
+					    theme: "dark"
+					  },
+					  xaxis: {
+					    type: "date"
+					  },
+					  yaxis: {
+					    min: 0,
+					    tickAmount: 4
+					  }
+					};
+
+					var chart1 = new ApexCharts(document.querySelector("#chart-area"), options1);
+
+					chart1.render();
+
+					var options2 = {
+					  chart: {
+					    id: "chart1",
+					    height: 130,
+					    type: "bar",
+					    foreColor: "#ccc",
+					    brush: {
+					      target: "chart2",
+					      enabled: true
+					    },
+					    selection: {
+					      fill: {
+						color: "#fff",
+						opacity: 0.4
+					      },
+					      xaxis: {
+						min: 0,
+						max: 2
+					      }  // 小候选框
+					    }
+					  },
+					  colors: ["#FF0080"],
+					  series: [
+					    {
+					      data: data1
+					    }
+					  ],
+					  stroke: {
+					    width: 2
+					  },
+					  grid: {
+					    borderColor: "#444"
+					  },
+					  markers: {
+					    size: 0
+					  },
+					  xaxis: {
+					    type: "date",
+					    tooltip: {
+					      enabled: false
+					    }
+					  },
+					  yaxis: {
+					    tickAmount: 2
+					  }
+					};
+
+					var chart2 = new ApexCharts(document.querySelector("#chart-bar"), options2);
+
+					chart2.render();
+
 				});
 			    
 

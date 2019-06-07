@@ -4,6 +4,7 @@
 import os
 import time
 import shutil
+import json
 
 from flask import Flask, request, Response, render_template as rt
 
@@ -43,14 +44,23 @@ def upload_success():  # 按序读出分片内容，并写入新文件
 
             chunk += 1
             os.remove(filename)  # 删除该分片，节约空间
-    
+    #返回的数据写在这里
+    data = [{
+					    "value": .2,
+					    "color": "#BEE7E9",
+					    "title": "男",
+					  		
+					},{
+					    "value": .8,
+					    "color": "#ECAD9E",
+					    "title": "女"
+					}];
     #上传文件成功后，跑模型得到新的视频文件
     #保存进数据库以后再读取数据库返回数据库所有条目在前端表格中显示
     shutil.move("./upload/"+target_filename,"./static/"+target_filename)	
-    time.sleep(5)	
-    data="finish"
-    #return rt('./index.html',data="finish")
-    return data
+    time.sleep(3)	
+    #data="finish"
+    return json.dumps(data)
 
 
 @app.route('/file/list', methods=['GET'])
