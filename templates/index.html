@@ -120,37 +120,25 @@
 			<section id="two" class="main style2 left dark fullscreen">
 				<table id="tab" style="border-collapse:collapse;border:1px solid white;margin-left:30px;margin-right:30px">
 					<tr style="border:1px solid white">
-						<th>Time</th>
-						<th>X</th>
-						<th>Y</th>
-						<th>Sex</th>
-						<th>Height</th>
-						<th>Age</th>
+						
+						<td align="center">Center_X</td>
+						<td align="center">Center_Y </td>
+						<td align="center">Appear Time</td>
+					        <td align="center">Disappear Time</td>
+						<td align="center">Gender</td>
+						<td align="center">Height</td>
+						<td align="center">Age</td>
 					</tr>
 					<tr>
-						<th>00:03</th>
-						<th>sanny</th>
-						<th>02</th>
-						<th>Female</th>
-						<th>170.5</th>
-						<th>23</th>
+						<td align="center">00:03</td>
+						<td align="center">sanny</td>
+						<td align="center">170.5</td>
+						<td align="center">23</td>
+						<td align="center">00:03</td>
+						<td align="center">00:03</td>
+						<td align="center">00:03</td>
 					</tr>
-					<tr>
-						<th>00:03</th>
-						<th>sanny</th>
-						<th>02</th>
-						<th>Female</th>
-						<th>170.5</th>
-						<th>23</th>
-					</tr>
-					<tr>
-						<th>00:03</th>
-						<th>sanny</th>
-						<th>02</th>
-						<th>Female</th>
-						<th>170.5</th>
-						<th>23</th>
-					</tr>
+					
 				</table>
 				<a href="#three" class="button style2 down1 anchored">Next</a>
 			</section>
@@ -217,10 +205,15 @@
 					$('video').attr({src:name,type:"video/mp4"});
 					alert("检测完成");
 					//alert(data);
-					str = "<tr><th>00:03</th><th>sanny</th><th>02</th><th>Female</th><th>170.5</th><th>23</th></tr>";
-					$('#tab').append(str);
 					var obj = $.parseJSON(data);
-					alert(obj);
+					for (var j=3;j<obj.length;j++){
+						//str = "<tr><th>00:03</th><th>sanny</th><th>02</th><th>Female</th><th>170.5</th><th>23</th></tr>";
+						//添加进表格
+					
+						str = "<tr><td align=\"center\">"+obj[j].centerx+"</td><td align=\"center\">"+obj[j].centery+"</td><td align=\"center\">"+obj[j].appeartime+"</td><td align=\"center\">"+obj[j].disappeartime+"</td><td align=\"center\">"+obj[j].Gender+"</td><td align=\"center\">"+obj[j].Height+"</td><td align=\"center\">"+obj[j].Age+"</td></tr>";
+						$('#tab').append(str);
+					}
+					//alert(obj);
                                         //
 					var canvas = document.getElementById('cavsElem');
 					var ctx = canvas.getContext('2d');
@@ -235,7 +228,7 @@
 					//定半径长度
 					var radius=200;
 					//从-90度开始绘制
-					for(var i=0; i<obj.length; i++){
+					for(var i=0; i<2; i++){
 					    ctx.beginPath();
 					    ctx.moveTo(x0,y0);
 					    //当前扇形角度
@@ -274,8 +267,15 @@
 					    tempAngle += angle;
 					}
 
-					//bing
-					var data1 = [[1,10],[2,8],[3,7],[4,6],[5,2],[6,7],[7,15],[8,16]];
+					//折线图
+					//for (var j=0;j<Object.keys(obj).length
+					var data1=[];
+ 					//传入每段时间的人数
+					for (key in obj[2]){
+						//alert(obj[2][key]);
+						data1.push([parseInt(key),obj[2][key]]);
+					}		
+					//var data1 = [[1,10],[2,8],[3,7],[4,6],[5,2],[6,7],[7,15],[8,16]];
 					var options1 = {
 					  chart: {
 					    id: "chart2",
