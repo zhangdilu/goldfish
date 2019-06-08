@@ -127,17 +127,9 @@
 					        <td align="center">Disappear Time</td>
 						<td align="center">Gender</td>
 						<td align="center">Height</td>
-						<td align="center">Age</td>
+						<td align="left">Age</td>
 					</tr>
-					<tr>
-						<td align="center">00:03</td>
-						<td align="center">sanny</td>
-						<td align="center">170.5</td>
-						<td align="center">23</td>
-						<td align="center">00:03</td>
-						<td align="center">00:03</td>
-						<td align="center">00:03</td>
-					</tr>
+
 					
 				</table>
 				<a href="#three" class="button style2 down1 anchored">Next</a>
@@ -205,22 +197,61 @@
 					$('video').attr({src:name,type:"video/mp4"});
 					alert("检测完成");
 					//alert(data);
-					var obj = $.parseJSON(data);
-					for (var j=3;j<obj.length;j++){
-						//str = "<tr><th>00:03</th><th>sanny</th><th>02</th><th>Female</th><th>170.5</th><th>23</th></tr>";
-						//添加进表格
-					
-						str = "<tr><td align=\"center\">"+obj[j].centerx+"</td><td align=\"center\">"+obj[j].centery+"</td><td align=\"center\">"+obj[j].appeartime+"</td><td align=\"center\">"+obj[j].disappeartime+"</td><td align=\"center\">"+obj[j].Gender+"</td><td align=\"center\">"+obj[j].Height+"</td><td align=\"center\">"+obj[j].Age+"</td></tr>";
-						$('#tab').append(str);
+					var obj1 = $.parseJSON(data);
+	
+					function sortNumber(a,b)
+					{
+ 						return a._id - b._id
 					}
-					//alert(obj);
-                                        //
+					obj1.sort(sortNumber);
+
+				        //count
+					var count_male=0
+					var count_female=0
+					for (var j=0;j<obj1.length;j++){
+						if (obj1[j].avg_gender>0.5){
+							count_female=count_female+1
+							}
+						else if (obj1[j].avg_gender<0.5&&obj1[j].avg_gender>0) {
+							count_male=count_male+1
+						}}
+					//alert(count_male)
+					//alert(count_female)
+					//alert(obj1[0].avg_height)
+					
+					for (var j=0;j<obj1.length;j++){
+						//添加进表格
+					        if(obj1[j].avg_gender>0.5)
+							{
+							obj1[j].avg_gender="female";
+								}
+						else if (obj1[j].avg_gender<0.5&&obj1[j].avg_gender>0)
+							{
+							obj1[j].avg_gender="male"
+								}
+						str = "<tr><td align=\"center\">"+obj1[j].centerx+"</td><td align=\"center\">"+obj1[j].centery+"</td><td align=\"center\">"+obj1[j].min_time+"</td><td align=\"center\">"+obj1[j].max_time+"</td><td align=\"center\">"+obj1[j].avg_gender+"</td><td align=\"center\">"+obj1[j].avg_height+"</td><td align=\"left\">"+obj1[j].avg_age+"</td></tr>";
+						$('#tab').append(str);}
+					
+                                        //chart1
 					var canvas = document.getElementById('cavsElem');
 					var ctx = canvas.getContext('2d');
 					canvas.width = 600;
 					canvas.height = 600;
 				 
-				
+				        var male_percentage=count_male/(count_male+count_female);
+					
+					function toDecimal(x) {   
+  						var f = parseFloat(x);    
+						if (isNaN(f)) {   
+ 						 return;    
+						}          
+						f = Math.round(x*100)/100;  
+						return f;        
+						}  
+					male_percentage=toDecimal(male_percentage);
+					//alert(male_percentage)
+					var female_percentage=1-male_percentage;
+					female_percentage=toDecimal(female_percentage)
 					//定义起始角度
 					var tempAngle=-90;
 					//定圆心位置
@@ -228,11 +259,12 @@
 					//定半径长度
 					var radius=200;
 					//从-90度开始绘制
+					var draw=[{"value":male_percentage,"color": "#BEE7E9","title": "男性"},{"value": female_percentage,"color": "#ECAD9E","title": "女性"}];
 					for(var i=0; i<2; i++){
 					    ctx.beginPath();
 					    ctx.moveTo(x0,y0);
 					    //当前扇形角度
-					    var angle = obj[i].value*360;
+					    var angle = draw[i].value*360;
 					    //当前扇形起始绘制弧度
 					    var startAngle = tempAngle*Math.PI/180;
 					    //当前扇形借结束绘制弧度
@@ -241,13 +273,13 @@
 					    ctx.arc(x0,y0,radius,startAngle,endAngle);
 					    ctx.stroke();
 					    //填充扇形
-					    ctx.fillStyle = obj[i].color;
+					    ctx.fillStyle = draw[i].color;
 					    ctx.fill();
 				 
 					    //绘制文字
 					    //提取要绘制的文字内容
 					    //var txt = data[i].value*100+'%';
-					    var txt = obj[i].title;
+					    var txt = draw[i].value*100+'%'+draw[i].title;
 					    //计算文字要放的角度
 					    var txtAngle = tempAngle + 1/2*angle;
 					    //计算文字要放的坐标位置
@@ -259,7 +291,7 @@
 						ctx.textAlign = 'end';
 					    }
 					    //文字绘制到扇形旁边
-					    ctx.font="40px Georgia";
+					    ctx.font="25px Georgia";
 					    //ctx.fillstyle="#FFF"
 					    ctx.fillText(txt,x,y);
 				 
@@ -271,9 +303,10 @@
 					//for (var j=0;j<Object.keys(obj).length
 					var data1=[];
  					//传入每段时间的人数
-					for (key in obj[2]){
+					//for (key in obj[2])
+					  for (var j=0;j<obj1.length;j++){
 						//alert(obj[2][key]);
-						data1.push([parseInt(key),obj[2][key]]);
+						data1.push([obj1[j].min_time,obj1[j]._id]);
 					}		
 					//var data1 = [[1,10],[2,8],[3,7],[4,6],[5,2],[6,7],[7,15],[8,16]];
 					var options1 = {

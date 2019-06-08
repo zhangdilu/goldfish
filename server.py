@@ -47,43 +47,7 @@ def upload_success():  # 按序读出分片内容，并写入新文件
     #上传文件成功后，跑模型得到新的视频文件
     #保存进数据库以后再读取数据库返回数据库所有条目在前端表格中显示
 
-
-    #第一步读取数据库中所有男性的数目，和所有女性的数目，得到男女占比,返回男比例，女比例,前端显示饼状图.
-    #第二步每隔一段时间（可以是5s，10s）统计人的数目，返回 时间：数目,前端显示折线图.
-    #第三步读取数据库中所有人的条目返回，前端显示列表
-	
-    #返回的数据写在这里 data[0],data[1]放男和女的占比 比如说0.2 0.8,
-    #data[2]放  时间：人数,时间不管是多少间隔要一样,这里间隔是1
-    #data[3]之后放返回给前端表格的数据，依次为出现时间，消失时间，x平均值，y平均值，性别，身高年龄
-
-    data = [{
-					    "value": .2,
-					    "color": "#BEE7E9",
-					    "title": "男",
-					  		
-					},{
-					    "value": .8,
-					    "color": "#ECAD9E",
-					    "title": "女"
-					},{
-					    "1": 5,
-					    "2":10,
-					    "3":14,
-					    "4":18,
-					    "5":25,
-					    "6":29,	
-					},{
-					    "appeartime":3,
-					    "disappeartime":4,
-					    "centerx":5,
-					    "centery":6,
-					    "Gender":"male",
-					    "Height":1.80,
-					    "Age":35,
-					}	
-	  		
-												
-						];
+  	data=[{"_id": 95, "avg_height": 1.5526633223005046, "avg_gender": 1, "avg_age": 23, "min_time": 160.52, "max_time": 160.6,"centerx":4,"centery":4},{"_id": 92, "avg_height": 1.7253909296321308, "avg_gender": 1, "avg_age": 21, "min_time": 160.08, "max_time": 164.24,"centerx":4,"centery":4},{"_id": 84, "avg_height": 1.618190753334315, "avg_gender": 1, "avg_age": 25, "min_time": 142.64, "max_time": 150.16,"centerx":4,"centery":4},{"_id": 83, "avg_height": 1.5766488467882043, "avg_gender": 0.2, "avg_age": 28, "min_time": 124.6, "max_time": 142.44,"centerx":4,"centery":4},{"_id": 82, "avg_height": 1.4767778356946877, "avg_gender": 0.2, "avg_age": 27, "min_time": 123.56, "max_time": 127.36,"centerx":4,"centery":4},{"_id": 80, "avg_height": 1.6305267477974306, "avg_gender": 0.2, "avg_age": 18, "min_time": 113.8, "max_time": 120.52,"centerx":4,"centery":4},{"_id": 76, "avg_height": 1.6855931616806203, "avg_gender": 0.2, "avg_age": 17, "min_time": 97.08, "max_time": 97.96,"centerx":4,"centery":4},{"_id": 64, "avg_height": 1.607870452636408, "avg_gender": 1, "avg_age": 16, "min_time": 95.28, "max_time": 96.92,"centerx":4,"centery":4},{"_id": 7, "avg_height": 2.067718703833809, "avg_gender": 1, "avg_age": 15, "min_time": 4.8, "max_time": 7.64,"centerx":4,"centery":4},{"_id": 57, "avg_height": 1.5854533427576873, "avg_gender": 1.0, "avg_age": 14, "min_time": 93.44, "max_time": 94.44,"centerx":4,"centery":4},{"_id": 56, "avg_height": 1.6651421069121044, "avg_gender": 1.0, "avg_age": 13, "min_time": 92.92, "max_time": 95.2,"centerx":4,"centery":4},{"_id": 87, "avg_height": 1.6685129331401467, "avg_gender": 1.0, "avg_age": 12, "min_time": 152.4, "max_time": 157.84,"centerx":4,"centery":4}];
  
     shutil.move("./upload/"+target_filename,"./static/"+target_filename)	
     time.sleep(3)	
