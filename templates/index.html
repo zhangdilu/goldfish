@@ -120,14 +120,14 @@
 			<section id="two" class="main style2 left dark fullscreen">
 				<table id="tab" style="border-collapse:collapse;border:1px solid white;margin-left:30px;margin-right:30px">
 					<tr style="border:1px solid white">
-						
-						<td align="center">Center_X</td>
-						<td align="center">Center_Y </td>
-						<td align="center">Appear Time</td>
-					        <td align="center">Disappear Time</td>
-						<td align="center">Gender</td>
-						<td align="center">Height</td>
-						<td align="left">Age</td>
+						<td align="center">人像</td>
+						<td align="center">起点坐标</td>
+						<td align="center">终点坐标</td>
+						<td align="center">出现时间(s)</td>
+					        <td align="center">消失时间(s)</td>
+						<td align="center">性别</td>
+						<td align="center">身高</td>
+						<td align="left">年龄</td>
 					</tr>
 
 					
@@ -218,6 +218,15 @@
 					//alert(count_male)
 					//alert(count_female)
 					//alert(obj1[0].avg_height)
+					function toDecimal(x) {   
+  						var f = parseFloat(x);    
+						if (isNaN(f)) {   
+ 						 return;    
+						}          
+						f = Math.round(x*100)/100;  
+						return f;        
+						}  
+
 					
 					for (var j=0;j<obj1.length;j++){
 						//添加进表格
@@ -229,7 +238,23 @@
 							{
 							obj1[j].avg_gender="male"
 								}
-						str = "<tr><td align=\"center\">"+obj1[j].centerx+"</td><td align=\"center\">"+obj1[j].centery+"</td><td align=\"center\">"+obj1[j].min_time+"</td><td align=\"center\">"+obj1[j].max_time+"</td><td align=\"center\">"+obj1[j].avg_gender+"</td><td align=\"center\">"+obj1[j].avg_height+"</td><td align=\"left\">"+obj1[j].avg_age+"</td></tr>";
+						var array=obj1[j].location
+						var start_x=(array[0].x1+array[0].x2)/2
+						start_x=toDecimal(start_x)
+						var start_y=(array[0].y1+array[0].y2)/2
+						start_y=toDecimal(start_y)
+						var end_x=(array[1].x1+array[1].x2)/2
+						end_x=toDecimal(end_x)
+						var end_y=(array[1].y1+array[1].y2)/2
+						end_y=toDecimal(end_y)
+		                                var start="("+start_x+" , "+start_y+")"
+						var end="("+end_x+" , "+end_y+")"
+						//alert(start) 										
+						obj1[j].avg_height=toDecimal(obj1[j].avg_height)
+						var imgurl="static/images/"+obj1[j]._id+".jpg\"width=\"150px\" height=\"200px\""+"/"+">"
+						//alert(imgurl)
+						//<td align="center"><image src="static/images/1.jpg"width="150px" height="200px"/></td>
+						str = "<tr><td align=\"center\">"+"<image src=\""+imgurl+"</td><td align=\"center\">"+start+"</td><td align=\"center\">"+end+"</td><td align=\"center\">"+obj1[j].min_time+"</td><td align=\"center\">"+obj1[j].max_time+"</td><td align=\"center\">"+obj1[j].avg_gender+"</td><td align=\"center\">"+obj1[j].avg_height+"</td><td align=\"left\">"+obj1[j].avg_age+"</td></tr>";
 						$('#tab').append(str);}
 					
                                         //chart1
