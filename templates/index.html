@@ -19,7 +19,7 @@
 		<script src="static/js/apexcharts.js"></script>	
 		<link rel="stylesheet" href="./static/css/skel-noscript.css" />
 		<link rel="stylesheet" href="./static/bootstrap/css/bootstrap.min.css" />
-		<link rel="stylesheet" href="./static/css/style.css" />
+		<link rel="stylesheet" href="static/css/style.css" />
 		<link rel="stylesheet" href="./static/css/px-video.css" />
 		<link rel="stylesheet" href="./static/css/webuploader.css">
     
@@ -194,7 +194,7 @@
 			    var data = { 'task_id': task_id, 'filename': file.source['name'] };
 		            var name="static/"+file.source['name'];		
 		            $.get('{{ url_for("upload_success") }}', data,function(data,status){
-					$('video').attr({src:name,type:"video/mp4"});
+					$('video').attr({src:"static/test.mp4",type:"video/mp4"});
 					alert("检测完成");
 					//alert(data);
 					var obj1 = $.parseJSON(data);
