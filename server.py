@@ -46,13 +46,13 @@ def upload_success():  # 按序读出分片内容，并写入新文件
             os.remove(filename)  # 删除该分片，节约空间
     #上传文件成功后，跑模型得到新的视频文件
     #保存进数据库以后再读取数据库返回数据库所有条目在前端表格中显示
-    data = resolve.resolveJson('./merged.json')
     local_path = '/Users/michelle/Documents/research/goldfish/upload/'
-    name = local_path+target_file
+    name = local_path+target_filename
     os.system("python3 /Users/michelle/Documents/research/homework/backend/Goldfish_backend/realtime_demo_fast_with_track_dataset_output.py --video %s"
             %name)
     #shutil.move("./upload/"+target_filename,"./static/"+target_filename)
     time.sleep(10)
+    data = resolve.resolveJson('./merged.json')
     #data="finish"
     return json.dumps(data)
 
